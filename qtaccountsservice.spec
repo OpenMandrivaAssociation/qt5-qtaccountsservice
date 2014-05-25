@@ -1,3 +1,7 @@
+%define major 0
+%define libname %mklibname %{name} %{major}
+%define develname %mklibname %{name} -d
+
 Summary:	Qt-style API for AccountsService
 Name:		qtaccountsservice
 Version:	0.1.1
@@ -8,6 +12,8 @@ URL:		https://github.com/mauios/qtaccountsservice
 Source0:	http://downloads.sourceforge.net/project/mauios/hawaii/%{name}/%{name}-%{version}.tar.gz
 BuildRequires:	cmake
 BuildRequires:	qt5-devel
+Requires:	%{libname} = %{EVRD}
+Requires:	accountsservice
 
 %track
 prog %{name} = {
@@ -18,6 +24,21 @@ prog %{name} = {
 
 %description
 Qt-style API for AccountsService.
+
+%package -n %{libname}
+Summary:	Main library for %{name}
+Group:		System/Libraries
+
+%description -n %{libname}
+%{name} main library.
+
+%package -n %{develname}
+Summary:	Development library for %{name}
+Group:		Development/C++
+Requires:	%{libname} = %{EVRD}
+
+%description -n %{libname}
+Development files and libraries for %{name}.
 
 %prep
 %setup -q
@@ -30,3 +51,23 @@ Qt-style API for AccountsService.
 %makeinstall_std -C build
 
 %files
+%dir %{_libdir}/hawaii/qml/QtAccountsService
+%{_libdir}/hawaii/qml/QtAccountsService/libdeclarative_accountsservice.so
+%{_libdir}/hawaii/qml/QtAccountsService/plugins.qmltypes
+%{_libdir}/hawaii/qml/QtAccountsService/qmldir
+
+
+%files -n %{libname}
+%{_libdir}/*qtaccountsservice-qt5.so.%{major}*
+
+%files -n %{develname}
+%dir %{_includedir}/QtAccountsService
+%dir %{_libdir}/cmake/QtAccountsService
+%{_includedir}/QtAccountsService/AccountsManager
+%{_includedir}/QtAccountsService/UserAccount
+%{_includedir}/QtAccountsService/UsersModel
+%{_includedir}/QtAccountsService/*.h
+%{_libdir}/cmake/QtAccountsService/*.cmake
+
+%{_libdir}/*qtaccountsservice-qt5.so
+
