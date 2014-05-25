@@ -7,7 +7,7 @@ Group:		Graphical desktop/Other
 URL:		https://github.com/mauios/qtaccountsservice
 Source0:	http://downloads.sourceforge.net/project/mauios/hawaii/%{name}/%{name}-%{version}.tar.gz
 BuildRequires:	cmake
-BuildRequires:	pkgconfig(Qt5)
+BuildRequires:	qt5-devel
 
 %track
 prog %{name} = {
