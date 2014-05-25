@@ -37,6 +37,7 @@ Group:		System/Libraries
 Summary:	Development library for %{name}
 Group:		Development/C++
 Requires:	%{libname} = %{EVRD}
+Provides:	%{name}-devel = %{EVRD}
 
 %description -n %{libname}
 Development files and libraries for %{name}.
@@ -69,6 +70,5 @@ Development files and libraries for %{name}.
 %{_includedir}/QtAccountsService/UsersModel
 %{_includedir}/QtAccountsService/*.h
 %{_libdir}/cmake/QtAccountsService/*.cmake
-
 %{_libdir}/*qtaccountsservice-qt5.so
 
