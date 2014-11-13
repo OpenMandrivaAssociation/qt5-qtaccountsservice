@@ -1,2 +1,4 @@
+removed_sources:
+  qtaccountsservice-0.1.1.tar.gz: 251f39de75a86075bdad4c599ef53ed98cf30e4f
 sources:
-  "qtaccountsservice-0.1.1.tar.gz": 251f39de75a86075bdad4c599ef53ed98cf30e4f
+  qtaccountsservice-0.1.2.tar.gz: c98e3f22e4eff5f2cc3b5bfab2d324a8b65f722e
