@@ -5,7 +5,7 @@
 Summary:	Qt-style API for AccountsService
 Name:		qtaccountsservice
 Version:	0.1.2
-Release:	2
+Release:	3
 License:	LGPLv2+
 Group:		Graphical desktop/Other
 URL:		https://github.com/mauios/qtaccountsservice
@@ -46,7 +46,7 @@ Development files and libraries for %{name}.
 %setup -q
 
 %build
-%cmake
+%cmake_qt5
 %make
 
 %install
