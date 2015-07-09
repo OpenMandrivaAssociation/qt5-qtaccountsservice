@@ -13,6 +13,7 @@ Source0:	http://downloads.sourceforge.net/project/mauios/hawaii/%{name}/%{name}-
 Source1:	qtaccountsservice.rpmlintrc
 BuildRequires:	cmake
 BuildRequires:	qt5-devel
+BuildRequires:	cmake(Qt5Qml)
 Requires:	%{libname} = %{EVRD}
 Requires:	accountsservice
 
