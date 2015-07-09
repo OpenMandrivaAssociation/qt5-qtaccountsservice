@@ -14,6 +14,7 @@ Source1:	qtaccountsservice.rpmlintrc
 BuildRequires:	cmake
 BuildRequires:	qt5-devel
 BuildRequires:	cmake(Qt5Qml)
+BuildRequires:	cmake(Qt5Quick)
 Requires:	%{libname} = %{EVRD}
 Requires:	accountsservice
 
