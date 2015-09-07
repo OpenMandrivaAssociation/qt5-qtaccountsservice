@@ -4,15 +4,16 @@
 
 Summary:	Qt-style API for AccountsService
 Name:		qtaccountsservice
-Version:	0.1.2
-Release:	4
+Version:	0.6.0
+Release:	1
 License:	LGPLv2+
 Group:		Graphical desktop/Other
 URL:		https://github.com/mauios/qtaccountsservice
 Source0:	http://downloads.sourceforge.net/project/mauios/hawaii/%{name}/%{name}-%{version}.tar.gz
 Source1:	qtaccountsservice.rpmlintrc
-BuildRequires:	cmake
-BuildRequires:	qt5-devel
+BuildRequires:	cmake(ECM)
+BuildRequires:	cmake(Qt5Core)
+BuildRequires:	cmake(Qt5DBus)
 BuildRequires:	cmake(Qt5Qml)
 BuildRequires:	cmake(Qt5Quick)
 Requires:	%{libname} = %{EVRD}
@@ -59,7 +60,6 @@ Development files and libraries for %{name}.
 %{_libdir}/hawaii/qml/QtAccountsService/libdeclarative_accountsservice.so
 %{_libdir}/hawaii/qml/QtAccountsService/plugins.qmltypes
 %{_libdir}/hawaii/qml/QtAccountsService/qmldir
-
 
 %files -n %{libname}
 %{_libdir}/*qtaccountsservice-qt5.so.%{major}*
