@@ -9,7 +9,7 @@ Release:	1
 License:	LGPLv2+
 Group:		Graphical desktop/Other
 URL:		https://github.com/mauios/qtaccountsservice
-Source0:	http://downloads.sourceforge.net/project/mauios/hawaii/%{name}/%{name}-%{version}.tar.gz
+Source0:	http://downloads.sourceforge.net/project/mauios/hawaii/%{name}/%{name}-%{version}.tar.xz
 Source1:	qtaccountsservice.rpmlintrc
 BuildRequires:	cmake(ECM)
 BuildRequires:	cmake(Qt5Core)
