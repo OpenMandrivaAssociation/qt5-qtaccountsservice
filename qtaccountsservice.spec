@@ -56,21 +56,19 @@ Development files and libraries for %{name}.
 %makeinstall_std -C build
 
 %files
-%dir %{_libdir}/hawaii/qml/QtAccountsService
-%{_libdir}/hawaii/qml/QtAccountsService/libdeclarative_accountsservice.so
-%{_libdir}/hawaii/qml/QtAccountsService/plugins.qmltypes
-%{_libdir}/hawaii/qml/QtAccountsService/qmldir
+%{_libdir}/qml/QtAccountsService/libdeclarative_accountsservice.so
+%{_libdir}/qml/QtAccountsService/plugins.qmltypes
+%{_libdir}/qml/QtAccountsService/qmldir
+
 
 %files -n %{libname}
-%{_libdir}/*qtaccountsservice-qt5.so.%{major}*
+%{_libdir}/libQtAccountsService.so.%{major}*
 
 %files -n %{develname}
-%dir %{_includedir}/QtAccountsService
-%dir %{_libdir}/cmake/QtAccountsService
-%{_includedir}/QtAccountsService/AccountsManager
-%{_includedir}/QtAccountsService/UserAccount
-%{_includedir}/QtAccountsService/UsersModel
-%{_includedir}/QtAccountsService/*.h
+%dir %{_includedir}/QtAccountsService/QtAccountsService
+%{_includedir}/QtAccountsService/QtAccountsService/AccountsManager
+%{_includedir}/QtAccountsService/QtAccountsService/UserAccount
+%{_includedir}/QtAccountsService/QtAccountsService/UsersModel
+%{_includedir}/QtAccountsService/qtaccountsservice/*.h
 %{_libdir}/cmake/QtAccountsService/*.cmake
-%{_libdir}/*qtaccountsservice-qt5.so
-
+%{_libdir}/libQtAccountsService.so
