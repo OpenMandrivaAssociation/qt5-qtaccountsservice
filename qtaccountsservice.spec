@@ -63,6 +63,7 @@ BuildRequires:	cmake(Qt5Core)
 BuildRequires:	cmake(Qt5DBus)
 BuildRequires:	cmake(Qt5Qml)
 BuildRequires:	cmake(Qt5Quick)
+BuildRequires:	cmake(Qt5Test)
 Requires:	%{libname} = %{EVRD}
 Requires:	accountsservice
 
