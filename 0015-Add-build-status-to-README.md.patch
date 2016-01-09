@@ -1,0 +1,24 @@
+From 04eb7ecdf0134f972fd4b8727855337959018c18 Mon Sep 17 00:00:00 2001
+From: Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+Date: Thu, 30 Jul 2015 20:15:11 +0200
+Subject: [PATCH 15/46] Add build status to README.md
+
+---
+ README.md | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/README.md b/README.md
+index a5eef93..5b6cd42 100644
+--- a/README.md
++++ b/README.md
+@@ -3,6 +3,7 @@ Qt AccountsService binding
+ 
+ [![GitHub release](https://img.shields.io/github/release/hawaii-desktop/qtaccountsservice.svg)](https://github.com/hawaii-desktop/qtaccountsservice)
+ [![GitHub issues](https://img.shields.io/github/issues/hawaii-desktop/qtaccountsservice.svg)](https://github.com/hawaii-desktop/qtaccountsservice/issues)
++[![Build Status](https://drone.io/github.com/hawaii-desktop/qtaccountsservice/status.png)](https://drone.io/github.com/hawaii-desktop/qtaccountsservice/latest)
+ [![IRC Network](https://img.shields.io/badge/irc-freenode-blue.svg "IRC Freenode")](https://webchat.freenode.net/?channels=hawaii-desktop)
+ 
+ Qt-style API to use freedesktop.org's AccountsService DBus service.
+-- 
+1.9.5
+

@@ -1,0 +1,25 @@
+From d6f8e85fd31d2ed4623d0c627dfc3fd8004aa3d7 Mon Sep 17 00:00:00 2001
+From: Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+Date: Wed, 5 Aug 2015 10:52:35 +0200
+Subject: [PATCH 29/46] Update README.md
+
+---
+ README.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/README.md b/README.md
+index 5b6cd42..761c6d6 100644
+--- a/README.md
++++ b/README.md
+@@ -3,7 +3,7 @@ Qt AccountsService binding
+ 
+ [![GitHub release](https://img.shields.io/github/release/hawaii-desktop/qtaccountsservice.svg)](https://github.com/hawaii-desktop/qtaccountsservice)
+ [![GitHub issues](https://img.shields.io/github/issues/hawaii-desktop/qtaccountsservice.svg)](https://github.com/hawaii-desktop/qtaccountsservice/issues)
+-[![Build Status](https://drone.io/github.com/hawaii-desktop/qtaccountsservice/status.png)](https://drone.io/github.com/hawaii-desktop/qtaccountsservice/latest)
++[![Build Status](https://travis-ci.org/hawaii-desktop/qtaccountsservice.svg)](https://travis-ci.org/hawaii-desktop/qtaccountsservice)
+ [![IRC Network](https://img.shields.io/badge/irc-freenode-blue.svg "IRC Freenode")](https://webchat.freenode.net/?channels=hawaii-desktop)
+ 
+ Qt-style API to use freedesktop.org's AccountsService DBus service.
+-- 
+1.9.5
+

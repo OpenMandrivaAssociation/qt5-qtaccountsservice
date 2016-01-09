@@ -1,0 +1,48 @@
+From dd22b7e67036ea6049a265272883ea4f658f425d Mon Sep 17 00:00:00 2001
+From: Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+Date: Thu, 30 Jul 2015 13:26:03 +0200
+Subject: [PATCH 08/46] Add Travis CI
+
+---
+ .travis.yml | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+ create mode 100644 .travis.yml
+
+diff --git a/.travis.yml b/.travis.yml
+new file mode 100644
+index 0000000..8965775
+--- /dev/null
++++ b/.travis.yml
+@@ -0,0 +1,29 @@
++language: cpp
++
++compiler:
++  - gcc
++
++before_install:
++  - if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
++  - if [ "$CXX" == "clang++" ]; then sudo add-apt-repository -y ppa:h-rayflood/llvm; fi
++
++  - sudo apt-add-repository -y ppa:ubuntu-sdk-team/ppa
++  - sudo add-apt-repository ppa:czchen/travis-ci -y
++  - sudo apt-get update -y
++install:
++  # gcc
++  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
++  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8"; fi
++  # clang
++  - if [ "$CXX" == "clang++" ]; then sudo apt-get install --allow-unauthenticated -qq clang-3.4; fi
++  - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.4"; fi
++
++  - sudo apt-get install qtdeclarative5-dev qttools5-dev qttools5-dev-tools
++  - sudo apt-get install cmake -y
++
++before_script:
++  - mkdir build
++  - cd build
++  - cmake ..
++
++script: make
+-- 
+1.9.5
+

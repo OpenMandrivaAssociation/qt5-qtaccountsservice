@@ -1,0 +1,43 @@
+From 10153d5d21113ab3a8894b60fbfc04d777426377 Mon Sep 17 00:00:00 2001
+From: Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+Date: Thu, 30 Jul 2015 13:41:13 +0200
+Subject: [PATCH 09/46] Install cmake and ecm manually
+
+---
+ .travis.yml | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/.travis.yml b/.travis.yml
+index 8965775..8093cdd 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -10,6 +10,7 @@ before_install:
+   - sudo apt-add-repository -y ppa:ubuntu-sdk-team/ppa
+   - sudo add-apt-repository ppa:czchen/travis-ci -y
+   - sudo apt-get update -y
++
+ install:
+   # gcc
+   - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+@@ -19,9 +20,17 @@ install:
+   - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.4"; fi
+ 
+   - sudo apt-get install qtdeclarative5-dev qttools5-dev qttools5-dev-tools
+-  - sudo apt-get install cmake -y
++
++  - wget http://download.kde.org/stable/frameworks/5.12/extra-cmake-modules-5.12.0.tar.xz
++  - tar -xJf extra-cmake-modules-5.12.0.tar.xz
++  - cd extra-cmake-modules-5.12.0 && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/ecm && make && make install
++  - export PATH=$HOME/ecm/bin:$PATH
+ 
+ before_script:
++  - wget http://www.cmake.org/files/v3.3/cmake-3.3.0-Linux-x86_64.tar.gz -O /tmp/cmake.tar.gz
++  - tar -xzf /tmp/cmake.tar.gz
++  - export PATH=$PWD/cmake-3.3.0-Linux-x86_64/bin:$PATH
++
+   - mkdir build
+   - cd build
+   - cmake ..
+-- 
+1.9.5
+

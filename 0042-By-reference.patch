@@ -1,0 +1,26 @@
+From 30f4476e15b09889cd22a8439af0b087b32f6df7 Mon Sep 17 00:00:00 2001
+From: Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+Date: Wed, 9 Sep 2015 08:11:05 +0200
+Subject: [PATCH 42/46] By reference
+
+Issue: #7
+---
+ src/accountsservice/accountsmanager.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/accountsservice/accountsmanager.h b/src/accountsservice/accountsmanager.h
+index 88702d9..4ce2b36 100644
+--- a/src/accountsservice/accountsmanager.h
++++ b/src/accountsservice/accountsmanager.h
+@@ -66,7 +66,7 @@ Q_SIGNALS:
+     void userAdded(UserAccount *);
+     void userDeleted(UserAccount *);
+     void userCached(UserAccount *);
+-    void listCachedUsersFinished(UserAccountList userList);
++    void listCachedUsersFinished(const UserAccountList &userList);
+ 
+ protected:
+     AccountsManagerPrivate *d_ptr;
+-- 
+1.9.5
+

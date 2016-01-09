@@ -1,0 +1,28 @@
+From 5f6447e35cbf574e004158489f911db0c81389d8 Mon Sep 17 00:00:00 2001
+From: Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+Date: Fri, 31 Jul 2015 07:20:33 +0200
+Subject: [PATCH 21/46] Avoid potential crashes during tests
+
+Issue: #6
+---
+ tests/auto/tst_api.cpp | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/tests/auto/tst_api.cpp b/tests/auto/tst_api.cpp
+index 79c5ef9..b1c05e9 100644
+--- a/tests/auto/tst_api.cpp
++++ b/tests/auto/tst_api.cpp
+@@ -89,7 +89,9 @@ private Q_SLOTS:
+ 
+         // Cache one user
+         UserAccount *account = manager->cacheUser(QStringLiteral("testuser"));
+-        QCOMPARE(account->userName(), QStringLiteral("testuser"));
++        QVERIFY(account != Q_NULLPTR);
++        if (account)
++            QCOMPARE(account->userName(), QStringLiteral("testuser"));
+ 
+         // Verify we have 1 cached user
+         cachedUsers = manager->listCachedUsers();
+-- 
+1.9.5
+

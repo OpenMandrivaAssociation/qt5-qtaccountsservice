@@ -1,0 +1,29 @@
+From d054300081160de10d588684b4dde98680079a9f Mon Sep 17 00:00:00 2001
+From: Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+Date: Mon, 17 Aug 2015 19:34:34 +0200
+Subject: [PATCH 32/46] Move IRC badge
+
+---
+ README.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/README.md b/README.md
+index f002cbc..2e7198c 100644
+--- a/README.md
++++ b/README.md
+@@ -1,11 +1,11 @@
+ Qt AccountsService binding
+ ==========================
+ 
++[![IRC Network](https://img.shields.io/badge/irc-freenode-blue.svg "IRC Freenode")](https://webchat.freenode.net/?channels=hawaii-desktop)
+ [![GitHub release](https://img.shields.io/github/release/hawaii-desktop/qtaccountsservice.svg)](https://github.com/hawaii-desktop/qtaccountsservice)
+ [![GitHub issues](https://img.shields.io/github/issues/hawaii-desktop/qtaccountsservice.svg)](https://github.com/hawaii-desktop/qtaccountsservice/issues)
+ [![Build Status](https://travis-ci.org/hawaii-desktop/qtaccountsservice.svg)](https://travis-ci.org/hawaii-desktop/qtaccountsservice)
+ [![Coverity Status](https://img.shields.io/coverity/scan/5911.svg)](https://scan.coverity.com/projects/5911)
+-[![IRC Network](https://img.shields.io/badge/irc-freenode-blue.svg "IRC Freenode")](https://webchat.freenode.net/?channels=hawaii-desktop)
+ 
+ Qt-style API to use freedesktop.org's AccountsService DBus service.
+ 
+-- 
+1.9.5
+

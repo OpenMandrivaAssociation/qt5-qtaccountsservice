@@ -1,0 +1,68 @@
+From 2e73bf36746ce492b10c34287c103711d9d74489 Mon Sep 17 00:00:00 2001
+From: Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+Date: Fri, 31 Jul 2015 07:36:25 +0200
+Subject: [PATCH 25/46] Replace QLatin1String with QStringLiteral
+
+We don't need Qt 4 compatibility anymore.
+---
+ src/accountsservice/accountsmanager.cpp |  4 ++--
+ src/accountsservice/useraccount.cpp     | 10 +++++-----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/src/accountsservice/accountsmanager.cpp b/src/accountsservice/accountsmanager.cpp
+index cbfc4e3..27bd4ad 100644
+--- a/src/accountsservice/accountsmanager.cpp
++++ b/src/accountsservice/accountsmanager.cpp
+@@ -38,8 +38,8 @@ namespace QtAccountsService {
+ AccountsManagerPrivate::AccountsManagerPrivate(const QDBusConnection &bus)
+ {
+     interface = new OrgFreedesktopAccountsInterface(
+-        QLatin1String("org.freedesktop.Accounts"),
+-        QLatin1String("/org/freedesktop/Accounts"),
++        QStringLiteral("org.freedesktop.Accounts"),
++        QStringLiteral("/org/freedesktop/Accounts"),
+         bus);
+ }
+ 
+diff --git a/src/accountsservice/useraccount.cpp b/src/accountsservice/useraccount.cpp
+index 4cfe0a4..2b3a5d4 100644
+--- a/src/accountsservice/useraccount.cpp
++++ b/src/accountsservice/useraccount.cpp
+@@ -59,10 +59,10 @@ UserAccountPrivate::UserAccountPrivate()
+ UserAccount::UserAccount(const QDBusConnection &bus)
+     : d_ptr(new UserAccountPrivate)
+ {
+-    QString objectPath = QLatin1String("/org/freedesktop/Accounts/User") + QString::number(getuid());
++    QString objectPath = QStringLiteral("/org/freedesktop/Accounts/User") + QString::number(getuid());
+ 
+     d_ptr->user =
+-        new OrgFreedesktopAccountsUserInterface(QLatin1String("org.freedesktop.Accounts"),
++        new OrgFreedesktopAccountsUserInterface(QStringLiteral("org.freedesktop.Accounts"),
+                                                 objectPath, bus, this);
+     connect(d_ptr->user, SIGNAL(Changed()), this, SIGNAL(accountChanged()));
+ }
+@@ -75,10 +75,10 @@ UserAccount::UserAccount(const QDBusConnection &bus)
+ UserAccount::UserAccount(uid_t uid, const QDBusConnection &bus)
+     : d_ptr(new UserAccountPrivate)
+ {
+-    QString objectPath = QLatin1String("/org/freedesktop/Accounts/User") + QString::number(uid);
++    QString objectPath = QStringLiteral("/org/freedesktop/Accounts/User") + QString::number(uid);
+ 
+     d_ptr->user =
+-        new OrgFreedesktopAccountsUserInterface(QLatin1String("org.freedesktop.Accounts"),
++        new OrgFreedesktopAccountsUserInterface(QStringLiteral("org.freedesktop.Accounts"),
+                                                 objectPath, bus, this);
+     connect(d_ptr->user, SIGNAL(Changed()), this, SIGNAL(accountChanged()));
+ }
+@@ -93,7 +93,7 @@ UserAccount::UserAccount(const QString &objectPath, const QDBusConnection &bus)
+     : d_ptr(new UserAccountPrivate)
+ {
+     d_ptr->user =
+-        new OrgFreedesktopAccountsUserInterface(QLatin1String("org.freedesktop.Accounts"),
++        new OrgFreedesktopAccountsUserInterface(QStringLiteral("org.freedesktop.Accounts"),
+                                                 objectPath, bus, this);
+     connect(d_ptr->user, SIGNAL(Changed()), this, SIGNAL(accountChanged()));
+ }
+-- 
+1.9.5
+

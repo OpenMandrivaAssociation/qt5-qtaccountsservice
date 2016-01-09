@@ -1,0 +1,29 @@
+From dfa43f756db4e96a02e5722e43106fbc3b185baa Mon Sep 17 00:00:00 2001
+From: Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+Date: Wed, 9 Sep 2015 07:25:05 +0200
+Subject: [PATCH 36/46] Do not install clang 3.6 with Travis CI
+
+Apparently the package does not exist.
+Will use Clang 3.4 as provided by the CI.
+---
+ .travis.yml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/.travis.yml b/.travis.yml
+index 6c930e6..39a9631 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -40,8 +40,8 @@ install:
+   - if [ "$CXX" == "g++" ]; then sudo apt-get install -qq gcc-4.8 g++-4.8; fi
+   - if [ "$CXX" == "g++" ]; then export CC="gcc-4.8"; export CXX="g++-4.8"; fi
+   # clang
+-  - if [ "$CXX" == "clang++" ]; then sudo apt-get install -qq clang-3.6; fi
+-  - if [ "$CXX" == "clang++" ]; then export CC="clang-3.6"; export CXX="clang++-3.6"; fi
++  #- if [ "$CXX" == "clang++" ]; then sudo apt-get install -qq clang-3.6; fi
++  #- if [ "$CXX" == "clang++" ]; then export CC="clang-3.6"; export CXX="clang++-3.6"; fi
+   # qt
+   - sudo apt-get -y install qt54declarative qt54tools
+ 
+-- 
+1.9.5
+

@@ -1,0 +1,408 @@
+From b4d9071fe44f0be5b10538595e47dab7429746b8 Mon Sep 17 00:00:00 2001
+From: Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+Date: Thu, 30 Jul 2015 08:38:32 +0200
+Subject: [PATCH 02/46] Initial unit test
+
+Issue: #6
+---
+ CMakeLists.txt              |   1 +
+ tests/CMakeLists.txt        |   1 +
+ tests/auto/CMakeLists.txt   |  27 ++++++++
+ tests/auto/fakeaccounts.cpp | 153 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/auto/fakeaccounts.h   |  75 ++++++++++++++++++++++
+ tests/auto/tst_api.cpp      |  87 +++++++++++++++++++++++++
+ 6 files changed, 344 insertions(+)
+ create mode 100644 tests/CMakeLists.txt
+ create mode 100644 tests/auto/CMakeLists.txt
+ create mode 100644 tests/auto/fakeaccounts.cpp
+ create mode 100644 tests/auto/fakeaccounts.h
+ create mode 100644 tests/auto/tst_api.cpp
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ad84794..aa11e3d 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -61,6 +61,7 @@ find_package(Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED Core DBus Qml Quick)
+ # Subdirectories
+ add_subdirectory(examples)
+ add_subdirectory(src)
++add_subdirectory(tests)
+ 
+ # Display featute summary
+ feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+new file mode 100644
+index 0000000..0653827
+--- /dev/null
++++ b/tests/CMakeLists.txt
+@@ -0,0 +1 @@
++add_subdirectory(auto)
+diff --git a/tests/auto/CMakeLists.txt b/tests/auto/CMakeLists.txt
+new file mode 100644
+index 0000000..156e91a
+--- /dev/null
++++ b/tests/auto/CMakeLists.txt
+@@ -0,0 +1,27 @@
++include(ECMMarkAsTest)
++
++include_directories(
++    ${CMAKE_SOURCE_DIR}/src/accountsservice
++    ${CMAKE_BINARY_DIR}/src/accountsservice
++)
++
++find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Test)
++
++set(SOURCES
++    fakeaccounts.cpp
++    tst_api.cpp
++)
++
++qt5_add_dbus_adaptor(SOURCES
++                     ${CMAKE_SOURCE_DIR}/src/accountsservice/org.freedesktop.Accounts.xml
++                     fakeaccounts.h FakeAccounts
++                     fakeaccountsadaptor FakeAccountsAdaptor)
++#qt5_add_dbus_adaptor(SOURCES
++#                     ${CMAKE_SOURCE_DIR}/src/accountsservice/org.freedesktop.Accounts.User.xml
++#                     fakeuser.h FakeUser
++#                     fakeuseradaptor FakeUserAdaptor)
++
++add_executable(tst_api ${SOURCES})
++target_link_libraries(tst_api Qt5::Test QtAccountsService)
++add_test(test-api tst_api)
++ecm_mark_as_test(tst_api)
+diff --git a/tests/auto/fakeaccounts.cpp b/tests/auto/fakeaccounts.cpp
+new file mode 100644
+index 0000000..ea23ead
+--- /dev/null
++++ b/tests/auto/fakeaccounts.cpp
+@@ -0,0 +1,153 @@
++/****************************************************************************
++ * This file is part of Qt AccountsService Addon.
++ *
++ * Copyright (C) 2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
++ *
++ * Author(s):
++ *    Pier Luigi Fiorini
++ *
++ * $BEGIN_LICENSE:GPL2+$
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ * $END_LICENSE$
++ ***************************************************************************/
++
++#include <QtCore/QDebug>
++#include <QtDBus/QDBusConnection>
++#include <QtDBus/QDBusError>
++
++#include "fakeaccounts.h"
++
++FakeAccounts::FakeAccounts(QObject *parent)
++    : QObject(parent)
++    , m_lastUid(1000)
++{
++    QDBusConnection bus = QDBusConnection::sessionBus();
++
++    if (!bus.registerObject(QStringLiteral("/org/freedesktop/Accounts"), this))
++        qFatal("Unable to register object: %s", qPrintable(bus.lastError().message()));
++    if (!bus.registerService(QStringLiteral("org.freedesktop.Accounts")))
++        qFatal("Unable to register service: %s", qPrintable(bus.lastError().message()));
++}
++
++FakeAccounts::~FakeAccounts()
++{
++    qDeleteAll(m_users);
++}
++
++QString FakeAccounts::daemonVersion() const
++{
++    return QStringLiteral("42");
++}
++
++QDBusObjectPath FakeAccounts::CacheUser(const QString &name)
++{
++    qDebug() << "Cache user" << name;
++
++    Q_FOREACH (UserEntry *entry, m_users) {
++        if (entry->name == name) {
++            entry->cached = true;
++            return entry->path;
++        }
++    }
++
++    return QDBusObjectPath();
++}
++
++void FakeAccounts::UncacheUser(const QString &name)
++{
++    qDebug() << "Uncache user" << name;
++
++    Q_FOREACH (UserEntry *entry, m_users) {
++        if (entry->name == name) {
++            entry->cached = false;
++            return;
++        }
++    }
++}
++
++QList<QDBusObjectPath> FakeAccounts::ListCachedUsers()
++{
++    qDebug() << "List cached users";
++
++    QList<QDBusObjectPath> paths;
++
++    Q_FOREACH (UserEntry *entry, m_users) {
++        if (entry->cached)
++            paths.append(entry->path);
++    }
++
++    return paths;
++}
++
++QDBusObjectPath FakeAccounts::CreateUser(const QString &name,
++                                         const QString &fullName,
++                                         int accountType)
++{
++    qDebug() << "Create user" << name;
++
++    const QString path = QString("/org/freedesktop/Accounts/User%1").arg(m_lastUid);
++    UserEntry *entry = new UserEntry;
++    entry->uid = m_lastUid;
++    entry->name = name;
++    entry->fullName = fullName;
++    entry->accountType = accountType;
++    entry->path = QDBusObjectPath(path);
++    entry->cached = false;
++    m_users.append(entry),
++    m_lastUid++;
++    return entry->path;
++}
++
++void FakeAccounts::DeleteUser(qlonglong id, bool removeFiles)
++{
++    qDebug() << "Delete user" << id;
++
++    Q_UNUSED(removeFiles);
++
++    Q_FOREACH (UserEntry *entry, m_users) {
++        if (entry->uid == id) {
++            m_users.removeOne(entry);
++            delete entry;
++            return;
++        }
++    }
++}
++
++QDBusObjectPath FakeAccounts::FindUserById(qlonglong id)
++{
++    qDebug() << "Find user by id" << id;
++
++    Q_FOREACH (UserEntry *entry, m_users) {
++        if (entry->uid == id)
++            return entry->path;
++    }
++
++    return QDBusObjectPath();
++}
++
++QDBusObjectPath FakeAccounts::FindUserByName(const QString &name)
++{
++    qDebug() << "Find user by name" << name;
++
++    Q_FOREACH (UserEntry *entry, m_users) {
++        if (entry->name == name)
++            return entry->path;
++    }
++
++    return QDBusObjectPath();
++}
++
++#include "moc_fakeaccounts.cpp"
+diff --git a/tests/auto/fakeaccounts.h b/tests/auto/fakeaccounts.h
+new file mode 100644
+index 0000000..f9f07ee
+--- /dev/null
++++ b/tests/auto/fakeaccounts.h
+@@ -0,0 +1,75 @@
++/****************************************************************************
++ * This file is part of Qt AccountsService Addon.
++ *
++ * Copyright (C) 2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
++ *
++ * Author(s):
++ *    Pier Luigi Fiorini
++ *
++ * $BEGIN_LICENSE:GPL2+$
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ * $END_LICENSE$
++ ***************************************************************************/
++
++#ifndef FAKEACCOUNTS_H
++#define FAKEACCOUNTS_H
++
++#include <QtCore/QObject>
++#include <QtDBus/QDBusObjectPath>
++
++struct UserEntry
++{
++    qlonglong uid;
++    QString name;
++    QString fullName;
++    int accountType;
++    QDBusObjectPath path;
++    bool cached;
++};
++
++class FakeAccounts : public QObject
++{
++    Q_OBJECT
++    Q_PROPERTY(QString DaemonVersion READ daemonVersion CONSTANT)
++public:
++    FakeAccounts(QObject *parent = 0);
++    ~FakeAccounts();
++
++    QString daemonVersion() const;
++
++public Q_SLOTS:
++    QDBusObjectPath CacheUser(const QString &name);
++    void UncacheUser(const QString &name);
++    QList<QDBusObjectPath> ListCachedUsers();
++
++    QDBusObjectPath CreateUser(const QString &name,
++                               const QString &fullName,
++                               int accountType);
++    void DeleteUser(qlonglong id, bool removeFiles);
++
++    QDBusObjectPath FindUserById(qlonglong id);
++    QDBusObjectPath FindUserByName(const QString &name);
++
++Q_SIGNALS:
++    void UserAdded(const QDBusObjectPath &user);
++    void UserDeleted(const QDBusObjectPath &user);
++
++private:
++    qlonglong m_lastUid;
++    QList<UserEntry *> m_users;
++};
++
++#endif // FAKEACCOUNTS_H
+diff --git a/tests/auto/tst_api.cpp b/tests/auto/tst_api.cpp
+new file mode 100644
+index 0000000..6db0b58
+--- /dev/null
++++ b/tests/auto/tst_api.cpp
+@@ -0,0 +1,87 @@
++/****************************************************************************
++ * This file is part of Qt AccountsService Addon.
++ *
++ * Copyright (C) 2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
++ *
++ * Author(s):
++ *    Pier Luigi Fiorini
++ *
++ * $BEGIN_LICENSE:GPL2+$
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ * $END_LICENSE$
++ ***************************************************************************/
++
++#include <QtTest/QtTest>
++
++#include "fakeaccounts.h"
++#include "fakeaccountsadaptor.h"
++#include "accountsmanager.h"
++
++using namespace QtAccountsService;
++
++class TestApi : public QObject
++{
++    Q_OBJECT
++public:
++    TestApi(QObject *parent = 0)
++        : QObject(parent)
++        , accounts(Q_NULLPTR)
++        , manager(Q_NULLPTR)
++    {
++    }
++
++private Q_SLOTS:
++    void initTestCase()
++    {
++        accounts = new FakeAccounts(this);
++        new FakeAccountsAdaptor(accounts);
++        manager = new AccountsManager(QDBusConnection::sessionBus());
++    }
++
++    void cleanupTestCase()
++    {
++        delete manager;
++        manager = Q_NULLPTR;
++
++        delete accounts;
++        accounts = Q_NULLPTR;
++    }
++
++    void createAccounts()
++    {
++        bool ret = manager->createUser(QStringLiteral("testuser"),
++                                       QStringLiteral("Test User"),
++                                       UserAccount::StandardAccountType);
++        QVERIFY(ret == true);
++    }
++
++    void deleteAccounts()
++    {
++        bool ret;
++        ret = manager->deleteUser(1000, false);
++        QVERIFY(ret == true);
++        ret = manager->deleteUser(1000, false);
++        QVERIFY(ret == false);
++    }
++
++private:
++    FakeAccounts *accounts;
++    AccountsManager *manager;
++};
++
++QTEST_MAIN(TestApi)
++
++#include "tst_api.moc"
+-- 
+1.9.5
+

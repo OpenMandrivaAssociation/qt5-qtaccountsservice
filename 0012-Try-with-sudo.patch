@@ -1,0 +1,34 @@
+From aed0281d117b91aaa374060d0b03a301eb913bd3 Mon Sep 17 00:00:00 2001
+From: Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+Date: Thu, 30 Jul 2015 19:17:50 +0200
+Subject: [PATCH 12/46] Try with sudo
+
+---
+ .travis.yml | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/.travis.yml b/.travis.yml
+index b5ec7b2..0ec0b02 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -2,7 +2,7 @@ language: cpp
+ 
+ cache: ccache
+ 
+-sudo: false
++sudo: required
+ 
+ compiler:
+   - gcc
+@@ -23,6 +23,8 @@ addons:
+ install:
+   # compiler
+   - export CXX="g++-4.8"
++  # qt
++  - sudo apt-get install qtdeclarative5-dev qttools5-dev qttools5-dev-tools
+   # cmake
+   - wget http://www.cmake.org/files/v3.3/cmake-3.3.0-Linux-x86_64.tar.gz -O /tmp/cmake.tar.gz
+   - tar -xzf /tmp/cmake.tar.gz
+-- 
+1.9.5
+

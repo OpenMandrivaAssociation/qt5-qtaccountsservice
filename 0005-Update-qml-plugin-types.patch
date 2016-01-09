@@ -1,0 +1,29 @@
+From d453f66682e22aa6018683fbf4dae334ac626e1a Mon Sep 17 00:00:00 2001
+From: Leslie Zhai <xiangzhai83@gmail.com>
+Date: Thu, 30 Jul 2015 10:09:27 +0800
+Subject: [PATCH 05/46] Update qml plugin types
+
+---
+ src/imports/accountsservice/plugins.qmltypes | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/src/imports/accountsservice/plugins.qmltypes b/src/imports/accountsservice/plugins.qmltypes
+index 315de9a..fc5016a 100644
+--- a/src/imports/accountsservice/plugins.qmltypes
++++ b/src/imports/accountsservice/plugins.qmltypes
+@@ -21,12 +21,6 @@ Module {
+             name: "userDeleted"
+             Parameter { type: "UserAccount"; isPointer: true }
+         }
+-        Signal { name: "userAccountChanged" }
+-        Method {
+-            name: "findUserIconFile"
+-            type: "string"
+-            Parameter { name: "userName"; type: "string" }
+-        }
+     }
+     Component {
+         name: "QtAccountsService::UserAccount"
+-- 
+1.9.5
+

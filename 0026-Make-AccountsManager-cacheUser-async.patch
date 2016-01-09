@@ -1,0 +1,115 @@
+From 13ed3cbad8aa4df1992ba45602f65558d89d9cfd Mon Sep 17 00:00:00 2001
+From: Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+Date: Fri, 31 Jul 2015 07:58:17 +0200
+Subject: [PATCH 26/46] Make AccountsManager::cacheUser() async
+
+Fix potential lock up of the entire desktop session.
+Probably we need to make more APIs async, that's a task for #7.
+
+Closes #9
+---
+ src/accountsservice/accountsmanager.cpp | 36 ++++++++++++++++++---------------
+ src/accountsservice/accountsmanager.h   |  3 ++-
+ tests/auto/tst_api.cpp                  |  6 +++++-
+ 3 files changed, 27 insertions(+), 18 deletions(-)
+
+diff --git a/src/accountsservice/accountsmanager.cpp b/src/accountsservice/accountsmanager.cpp
+index 27bd4ad..2424b3b 100644
+--- a/src/accountsservice/accountsmanager.cpp
++++ b/src/accountsservice/accountsmanager.cpp
+@@ -25,6 +25,7 @@
+  ***************************************************************************/
+ 
+ #include <QtCore/QDebug>
++#include <QtDBus/QDBusPendingCallWatcher>
+ 
+ #include "accountsmanager.h"
+ #include "accountsmanager_p.h"
+@@ -97,27 +98,30 @@ AccountsManager::~AccountsManager()
+     The user name may be a remote user, but the system must be able to lookup
+     the user name and resolve the user information.
+ 
++    A userCached() signal with a UserAccount pointer will be emitted as soon
++    as the user account has been cached by AccountsService.
++
+     \param userName The user name for the user.
+ */
+-UserAccount *AccountsManager::cacheUser(const QString &userName)
++void AccountsManager::cacheUser(const QString &userName)
+ {
+     Q_D(AccountsManager);
+ 
+-    QDBusPendingReply<QDBusObjectPath> reply = d->interface->CacheUser(userName);
+-    reply.waitForFinished();
+-
+-    if (reply.isError()) {
+-        QDBusError error = reply.error();
+-        qWarning("Couldn't cache user %s: %s",
+-                 userName.toUtf8().constData(),
+-                 error.errorString(error.type()).toUtf8().constData());
+-        return 0;
+-    }
+-
+-    QDBusObjectPath path = reply.argumentAt<0>();
+-    if (path.path().isEmpty())
+-        return Q_NULLPTR;
+-    return new UserAccount(path.path(), d->interface->connection());
++    QDBusPendingCall call = d->interface->CacheUser(userName);
++    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(call, this);
++    connect(watcher, &QDBusPendingCallWatcher::finished, this, [=](QDBusPendingCallWatcher *w) {
++        QDBusPendingReply<QDBusObjectPath> reply = *w;
++        if (reply.isError()) {
++            QDBusError error = reply.error();
++            qWarning("Couldn't cache user %s: %s",
++                     userName.toUtf8().constData(),
++                     error.errorString(error.type()).toUtf8().constData());
++        } else {
++            QDBusObjectPath path = reply.argumentAt<0>();
++            if (!path.path().isEmpty())
++                Q_EMIT userCached(new UserAccount(path.path(), d->interface->connection()));
++        }
++    });
+ }
+ 
+ /*!
+diff --git a/src/accountsservice/accountsmanager.h b/src/accountsservice/accountsmanager.h
+index 4a24640..7a72cca 100644
+--- a/src/accountsservice/accountsmanager.h
++++ b/src/accountsservice/accountsmanager.h
+@@ -45,7 +45,7 @@ public:
+     explicit AccountsManager(const QDBusConnection &bus = QDBusConnection::systemBus());
+     ~AccountsManager();
+ 
+-    UserAccount *cacheUser(const QString &userName);
++    void cacheUser(const QString &userName);
+     void uncacheUser(const QString &userName);
+     void uncacheUser(UserAccount *account);
+ 
+@@ -64,6 +64,7 @@ public:
+ Q_SIGNALS:
+     void userAdded(UserAccount *);
+     void userDeleted(UserAccount *);
++    void userCached(UserAccount *);
+ 
+ protected:
+     AccountsManagerPrivate *d_ptr;
+diff --git a/tests/auto/tst_api.cpp b/tests/auto/tst_api.cpp
+index b1c05e9..0becd1f 100644
+--- a/tests/auto/tst_api.cpp
++++ b/tests/auto/tst_api.cpp
+@@ -88,7 +88,11 @@ private Q_SLOTS:
+         QCOMPARE(cachedUsers.size(), 0);
+ 
+         // Cache one user
+-        UserAccount *account = manager->cacheUser(QStringLiteral("testuser"));
++        QSignalSpy spyCacheUser(manager, SIGNAL(userCached(UserAccount*)));
++        manager->cacheUser(QStringLiteral("testuser"));
++        QVERIFY(spyCacheUser.wait(1000));
++        QCOMPARE(spyCacheUser.count(), 1);
++        UserAccount *account = qvariant_cast<UserAccount *>(spyCacheUser.at(0).at(0));
+         QVERIFY(account != Q_NULLPTR);
+         if (account)
+             QCOMPARE(account->userName(), QStringLiteral("testuser"));
+-- 
+1.9.5
+

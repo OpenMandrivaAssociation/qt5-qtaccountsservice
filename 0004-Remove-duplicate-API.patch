@@ -1,0 +1,76 @@
+From e62b80f6ded19d6cb5c6f311fe05d761f5750bf4 Mon Sep 17 00:00:00 2001
+From: Leslie Zhai <xiangzhai83@gmail.com>
+Date: Thu, 30 Jul 2015 10:08:10 +0800
+Subject: [PATCH 04/46] Remove duplicate API
+
+---
+ src/accountsservice/accountsmanager.cpp | 24 ------------------------
+ src/accountsservice/accountsmanager.h   |  6 ------
+ 2 files changed, 30 deletions(-)
+
+diff --git a/src/accountsservice/accountsmanager.cpp b/src/accountsservice/accountsmanager.cpp
+index 9cb0401..914c9a6 100644
+--- a/src/accountsservice/accountsmanager.cpp
++++ b/src/accountsservice/accountsmanager.cpp
+@@ -221,30 +221,6 @@ UserAccount *AccountsManager::findUserByName(const QString &userName)
+     return new UserAccount(path.path());
+ }
+ 
+-void AccountsManager::slotUserAccountChanged() 
+-{
+-    emit userAccountChanged();
+-}
+-
+-/*!
+-    Find user iconFileName
+-    
+-    \param userName The name of the user you want to find
+-    \return the iconFile path
+- */
+-QString AccountsManager::findUserIconFile(const QString &userName) 
+-{
+-    UserAccount *user = findUserByName(userName);
+-    
+-    if (user) {
+-        connect(user, SIGNAL(accountChanged()), 
+-                this, SLOT(slotUserAccountChanged()));
+-        return user->iconFileName();
+-    }
+-
+-    return QString();
+-}
+-
+ /*!
+     Creates a new \a accountType type user account whose name is \a userName,
+     real name is \a fullName.
+diff --git a/src/accountsservice/accountsmanager.h b/src/accountsservice/accountsmanager.h
+index c690764..4a24640 100644
+--- a/src/accountsservice/accountsmanager.h
++++ b/src/accountsservice/accountsmanager.h
+@@ -54,8 +54,6 @@ public:
+     UserAccount *findUserById(uid_t uid);
+     UserAccount *findUserByName(const QString &userName);
+ 
+-    Q_INVOKABLE QString findUserIconFile(const QString &userName);
+-
+     bool createUser(const QString &userName,
+                     const QString &fullName,
+                     UserAccount::AccountType accountType);
+@@ -66,14 +64,10 @@ public:
+ Q_SIGNALS:
+     void userAdded(UserAccount *);
+     void userDeleted(UserAccount *);
+-    void userAccountChanged();
+ 
+ protected:
+     AccountsManagerPrivate *d_ptr;
+ 
+-private slots:
+-    void slotUserAccountChanged();
+-
+ private:
+     Q_DECLARE_PRIVATE(AccountsManager)
+     Q_PRIVATE_SLOT(d_func(), void _q_userAdded(const QDBusObjectPath &path))
+-- 
+1.9.5
+

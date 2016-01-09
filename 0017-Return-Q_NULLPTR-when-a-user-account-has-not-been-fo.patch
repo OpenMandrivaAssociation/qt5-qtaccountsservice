@@ -1,0 +1,45 @@
+From 2c2202a85eed3ce93d1209e80abbdac466ff48ba Mon Sep 17 00:00:00 2001
+From: Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+Date: Thu, 30 Jul 2015 20:37:38 +0200
+Subject: [PATCH 17/46] Return Q_NULLPTR when a user account has not been found
+
+Check the path returned by the find and cache  methods, do not
+create and return a UserAccount in that case.
+---
+ src/accountsservice/accountsmanager.cpp | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/src/accountsservice/accountsmanager.cpp b/src/accountsservice/accountsmanager.cpp
+index 1217bbf..2fa357d 100644
+--- a/src/accountsservice/accountsmanager.cpp
++++ b/src/accountsservice/accountsmanager.cpp
+@@ -115,6 +115,8 @@ UserAccount *AccountsManager::cacheUser(const QString &userName)
+     }
+ 
+     QDBusObjectPath path = reply.argumentAt<0>();
++    if (path.path().isEmpty())
++        return Q_NULLPTR;
+     return new UserAccount(path.path());
+ }
+ 
+@@ -193,6 +195,8 @@ UserAccount *AccountsManager::findUserById(uid_t uid)
+     }
+ 
+     QDBusObjectPath path = reply.argumentAt<0>();
++    if (path.path().isEmpty())
++        return Q_NULLPTR;
+     return new UserAccount(path.path());
+ }
+ 
+@@ -218,6 +222,8 @@ UserAccount *AccountsManager::findUserByName(const QString &userName)
+     }
+ 
+     QDBusObjectPath path = reply.argumentAt<0>();
++    if (path.path().isEmpty())
++        return Q_NULLPTR;
+     return new UserAccount(path.path());
+ }
+ 
+-- 
+1.9.5
+
