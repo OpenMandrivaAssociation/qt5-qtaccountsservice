@@ -1,15 +1,16 @@
 %define major 0
 %define libname %mklibname %{name} %{major}
 %define develname %mklibname %{name} -d
+%define	upname qtaccountsservice
 
 Summary:	Qt-style API for AccountsService
-Name:		qtaccountsservice
+Name:		qt5-qtaccountsservice
 Version:	0.6.0
 Release:	2
 License:	LGPLv2+
 Group:		Graphical desktop/Other
 URL:		https://github.com/mauios/qtaccountsservice
-Source0:	http://downloads.sourceforge.net/project/mauios/hawaii/%{name}/%{name}-%{version}.tar.xz
+Source0:	http://downloads.sourceforge.net/project/mauios/hawaii/%{upname}/%{upname}-%{version}.tar.xz
 Source1:	qtaccountsservice.rpmlintrc
 Patch0:		0001-Add-QDBusConnection-argument-to-AccountsManager.patch
 Patch1:		0002-Initial-unit-test.patch
@@ -94,7 +95,7 @@ Provides:	%{name}-devel = %{EVRD}
 Development files and libraries for %{name}.
 
 %prep
-%setup -q
+%setup -qn %{upname}-%{version}
 %apply_patches
 
 %build
