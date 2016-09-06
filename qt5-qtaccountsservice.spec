@@ -1,12 +1,12 @@
 %define major 0
-%define libname %mklibname %{name} %{major}
-%define develname %mklibname %{name} -d
+%define libname %mklibname QtAccountsService %{major}
+%define develname %mklibname QtAccountsService -d
 %define	upname qtaccountsservice
 
 Summary:	Qt-style API for AccountsService
 Name:		qt5-qtaccountsservice
 Version:	0.6.0
-Release:	2
+Release:	3
 License:	LGPLv2+
 Group:		Graphical desktop/Other
 URL:		https://github.com/mauios/qtaccountsservice
@@ -81,6 +81,8 @@ Qt-style API for AccountsService.
 %package -n %{libname}
 Summary:	Main library for %{name}
 Group:		System/Libraries
+Obsoletes:	%{mklibname qtaccountsservice 0} < 0.6.0-3
+Obsoletes:	%{mklibname qt5-qtaccountsservice 0} < 0.6.0-3
 
 %description -n %{libname}
 %{name} main library.
