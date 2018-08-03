@@ -40,7 +40,7 @@ Group:		Development/C++
 Requires:	%{libname} = %{EVRD}
 Provides:	%{name}-devel = %{EVRD}
 
-%description -n %{libname}
+%description -n %{develname}
 Development files and libraries for %{name}.
 
 %prep
