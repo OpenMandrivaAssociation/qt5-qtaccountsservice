@@ -5,7 +5,7 @@
 
 Summary:	Qt-style API for AccountsService
 Name:		qt5-qtaccountsservice
-Version:	0.7.0
+Version:	1.2.0
 Release:	1
 License:	LGPLv2+
 Group:		Graphical desktop/Other
@@ -21,13 +21,6 @@ BuildRequires:	cmake(Qt5Quick)
 BuildRequires:	cmake(Qt5Test)
 Requires:	%{libname} = %{EVRD}
 Requires:	accountsservice
-
-%track
-prog %{name} = {
-	url = http://downloads.sourceforge.net/project/mauios/hawaii/qtaccountsservice
-	regex = "%{name}-(__VER__)\.tar\.gz"
-	version = %{version}
-}
 
 %description
 Qt-style API for AccountsService.
