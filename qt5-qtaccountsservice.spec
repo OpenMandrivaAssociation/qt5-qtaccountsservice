@@ -14,6 +14,7 @@ Source0:	https://github.com/lirios/qtaccountsservice/releases/download/v%{versio
 Source1:	qtaccountsservice.rpmlintrc
 
 BuildRequires:	cmake(ECM)
+BuildRequires:	qbs
 BuildRequires:	cmake(Qt5Core)
 BuildRequires:	cmake(Qt5DBus)
 BuildRequires:	cmake(Qt5Qml)
