@@ -13,7 +13,6 @@ URL:		https://github.com/lirios/qtaccountsservice
 Source0:	https://github.com/lirios/qtaccountsservice/releases/download/v%{version}/%{upname}-%{version}.tar.xz
 Source1:	qtaccountsservice.rpmlintrc
 
-BuildRequires:	cmake(ECM)
 BuildRequires:	qbs
 BuildRequires:	cmake(Qt5Core)
 BuildRequires:	cmake(Qt5DBus)
@@ -49,11 +48,13 @@ Development files and libraries for %{name}.
 %apply_patches
 
 %build
-%cmake_qt5
-%make
+qbs setup-toolchains --type clang %{_bindir}/clang clang
+qbs setup-qt %{_bindir}/qmake-qt5 qt5
+qbs config profiles.qt5.baseProfile gcc
+qbs build --no-install -d build profile:qt5 qbs.installRoot:/ qbs.installPrefix:usr modules.lirideployment.qmlDir:lib/qt/qml
 
 %install
-%makeinstall_std -C build
+qbs install -d build --no-build -v --install-root %{buildroot} profile:qt5
 
 %files
 %{_libdir}/qml/QtAccountsService/libdeclarative_accountsservice.so
