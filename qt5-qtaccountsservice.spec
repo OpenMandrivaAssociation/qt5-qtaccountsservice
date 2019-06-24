@@ -5,7 +5,7 @@
 
 Summary:	Qt-style API for AccountsService
 Name:		qt5-qtaccountsservice
-Version:	1.2.0
+Version:	1.3.0
 Release:	2
 License:	LGPLv2+
 Group:		Graphical desktop/Other
@@ -14,6 +14,7 @@ Source0:	https://github.com/lirios/qtaccountsservice/releases/download/v%{versio
 Source1:	qtaccountsservice.rpmlintrc
 
 BuildRequires:	qbs
+BuildRequires:	qmake5
 BuildRequires:	cmake(Qt5Core)
 BuildRequires:	cmake(Qt5DBus)
 BuildRequires:	cmake(Qt5Qml)
@@ -48,13 +49,11 @@ Development files and libraries for %{name}.
 %apply_patches
 
 %build
-qbs setup-toolchains --type clang %{_bindir}/clang clang
-qbs setup-qt %{_bindir}/qmake-qt5 qt5
-qbs config profiles.qt5.baseProfile gcc
-qbs build --no-install -d build profile:qt5 qbs.installRoot:/ qbs.installPrefix:usr modules.lirideployment.qmlDir:lib/qt/qml
+%cmake
+%make_build
 
 %install
-qbs install -d build --no-build -v --install-root %{buildroot} profile:qt5
+%make_install
 
 %files
 %{_libdir}/qml/QtAccountsService/libdeclarative_accountsservice.so
