@@ -1,7 +1,7 @@
 %define major 0
 %define libname %mklibname QtAccountsService %{major}
 %define develname %mklibname QtAccountsService -d
-%define	upname qtaccountsservice
+%define upname qtaccountsservice
 
 Summary:	Qt-style API for AccountsService
 Name:		qt5-qtaccountsservice
@@ -45,8 +45,7 @@ Provides:	%{name}-devel = %{EVRD}
 Development files and libraries for %{name}.
 
 %prep
-%setup -qn %{upname}-%{version}
-%apply_patches
+%autosetup -n %{upname}-%{version} -p1
 
 %build
 %cmake
@@ -56,6 +55,7 @@ Development files and libraries for %{name}.
 %make_install
 
 %files
+%dir %{_libdir}/qml/QtAccountsService
 %{_libdir}/qml/QtAccountsService/libdeclarative_accountsservice.so
 %{_libdir}/qml/QtAccountsService/plugins.qmltypes
 %{_libdir}/qml/QtAccountsService/qmldir
@@ -65,6 +65,7 @@ Development files and libraries for %{name}.
 %{_libdir}/libQtAccountsService.so.%{major}*
 
 %files -n %{develname}
+%dir %{_includedir}/QtAccountsService
 %dir %{_includedir}/QtAccountsService/QtAccountsService
 %{_includedir}/QtAccountsService/QtAccountsService/AccountsManager
 %{_includedir}/QtAccountsService/QtAccountsService/UserAccount
