@@ -46,7 +46,7 @@ Development files and libraries for %{name}.
 
 %prep
 %setup -qn %{upname}-%{version}
-%apply_patches
+%autopatch -p1
 
 %build
 %cmake
