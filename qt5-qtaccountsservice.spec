@@ -6,7 +6,7 @@
 Summary:	Qt-style API for AccountsService
 Name:		qt5-qtaccountsservice
 Version:	1.3.0
-Release:	2
+Release:	3
 License:	LGPLv2+
 Group:		Graphical desktop/Other
 URL:		https://github.com/lirios/qtaccountsservice
